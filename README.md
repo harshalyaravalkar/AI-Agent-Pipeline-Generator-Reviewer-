@@ -76,7 +76,21 @@ GROQ_API_KEY=your_api_key_here
 
 This project supports two LLM backends:
 
-### Option 1: Ollama (Default - Local)
+
+
+### Option 1: Groq API (Default - Faster)
+
+1. Get API key:  
+   https://console.groq.com/
+
+2. Add to `.env`:
+GROQ_API_KEY=your_api_key_here
+
+3. By default, the app uses Groq:
+USE_OLLAMA = False
+---
+
+### Option 2: Ollama (Optional - Local)
 
 1. Install Ollama:  
    https://ollama.com/download
@@ -90,22 +104,8 @@ ollama run phi3
 4. Ensure it is running at:
 http://localhost:11434
 
-By default, the app uses Ollama:
-USE_OLLAMA = True
-
----
-
-### Option 2: Groq API (Optional - Faster)
-
-1. Get API key:  
-   https://console.groq.com/
-
-2. Add to `.env`:
-GROQ_API_KEY=your_api_key_here
-
 3. Switch backend in code:
-USE_OLLAMA = False
-
+USE_OLLAMA = True
 ---
 
 ## Running the Application
