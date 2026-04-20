@@ -11,9 +11,18 @@ def extract_json(text):
     try:
         return json.loads(text)
     except:
-        start = text.find("{")
-        end = text.rfind("}") + 1
-        return json.loads(text[start:end])
+        import re
+
+        match = re.search(r"\{.*\}", text, re.DOTALL)
+        if match:
+            json_str = match.group(0)
+            try:
+                return json.loads(json_str)
+            except Exception as e:
+                print(" Broken JSON:", json_str)
+                raise e
+
+        raise Exception(" No JSON found in response")
     
 def validate_output(data):
     try:
@@ -35,7 +44,7 @@ def validate_output(data):
 USE_OLLAMA = True   # set False if you want to use Groq
 OLLAMA_MODEL = "phi3"  # or llama3, mistral, etc.
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_API_KEY = Groq(api_key=os.getenv("GROQ_API_KEY"))
 GROQ_MODEL = "llama3-8b-8192"
 
 
