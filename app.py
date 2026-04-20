@@ -41,11 +41,11 @@ def validate_output(data):
 
 # config
 
-USE_OLLAMA = True   # set False if you want to use Groq
+USE_OLLAMA = False   # set True if you want to use local ollama
 OLLAMA_MODEL = "phi3"  # or llama3, mistral, etc.
 
-GROQ_API_KEY = Groq(api_key=os.getenv("GROQ_API_KEY"))
-GROQ_MODEL = "llama3-8b-8192"
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_MODEL = "llama-3.1-8b-instant"
 
 
 # LLM callers
@@ -72,10 +72,12 @@ def call_ollama(prompt):
 
 def call_groq(prompt):
     url = "https://api.groq.com/openai/v1/chat/completions"
+    
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
     }
+
     payload = {
         "model": GROQ_MODEL,
         "messages": [
@@ -83,9 +85,17 @@ def call_groq(prompt):
         ],
         "temperature": 0
     }
-    response = requests.post(url, headers=headers, json=payload)
-    return response.json()["choices"][0]["message"]["content"]
 
+    response = requests.post(url, headers=headers, json=payload)
+
+    data = response.json()
+
+    print("Groq response:", data)
+
+    if "choices" in data:
+        return data["choices"][0]["message"]["content"]
+    else:
+        raise Exception(f"Groq API error: {data}")
 
 def call_llm(prompt):
     if USE_OLLAMA:
